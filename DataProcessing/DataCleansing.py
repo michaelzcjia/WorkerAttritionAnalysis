@@ -31,6 +31,20 @@ class DataFrame():
             df[feature_name] = (df[feature_name] - min) / (max - min)
 
         return df
+    def getNeuralNetworkInputs(self, df, pct=0.7, dropColumns = None):
+        if dropColumns != None:
+            df = df.drop(dropColumns)
+
+        label = df["left"]
+        df.loc[:,("notLeft")] = df["left"] == 0 #Not left is the negative of left
+        df.loc[:, ("notLeft")] = df["notLeft"].astype(int) #Making True -> int
+
+        features = df.drop(labels=["left", "notLeft"], axis=1)
+
+        inputX = features.as_matrix()
+        inputY = df.loc[:, ["left", "notLeft"]].as_matrix()
+
+        return (inputX, inputY)
 
     def getFeaturesLabels(self, df, pct=0.7, dropColumns = None):
         if dropColumns != None:
